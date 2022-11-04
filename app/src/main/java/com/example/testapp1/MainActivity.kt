@@ -10,6 +10,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val recycler = this.findViewById<RecyclerView>(R.id.recycler)
-        recycler.adapter = Adapter()
+        val arr = arrayOf(
+            arrayOf("1", "Antoni", "Dzwoni"),
+            arrayOf("2", "Michaś", "Bagietka"),
+            arrayOf("3", "Maks", "Grzyb")
+        )
+        println(arr.toString())
+        recycler.adapter = Adapter(arr)
     }
 }

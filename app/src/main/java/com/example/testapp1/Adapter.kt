@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Adapter(/*private val dataSet: Array<String>*/) :
+class Adapter(private val dataSet: Array<Array<String>>) :
     RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     /**
@@ -44,13 +44,13 @@ class Adapter(/*private val dataSet: Array<String>*/) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.idView.text = "id here"
-        viewHolder.nameView.text = "name here"
-        viewHolder.surnameView.text = "surname here"
+        viewHolder.idView.text = dataSet[position][0]
+        viewHolder.nameView.text = dataSet[position][1]
+        viewHolder.surnameView.text = dataSet[position][2]
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = 10//dataSet.size
+    override fun getItemCount() = dataSet.size
 
 }
 
