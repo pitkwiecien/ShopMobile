@@ -18,7 +18,7 @@ class ProductsActivity : AppCompatActivity() {
         }
 
         binding.usersButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, UsersActivity::class.java)
             startActivity(intent)
         }
 
