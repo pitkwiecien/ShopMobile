@@ -32,9 +32,7 @@ class UsersActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val url = "http://192.168.1.118:8080/api/users"
-
-        showDataFromApi(url)
+        showDataFromApi()
     }
 
     private fun showDataFromApi(fromUrl: String){
@@ -50,10 +48,27 @@ class UsersActivity : AppCompatActivity() {
                     tmpList.add(jsonArray.getJSONObject(i).getString("surname"))
                     resultList.add(tmpList)
                 }
-                binding.recycler.adapter = Adapter(resultList)
+                binding.recycler.adapter = Adapter(resultList, this)
             }, {  }
         )
         val queue = Volley.newRequestQueue(this)
         queue.add(req)
+    }
+
+    fun showDataFromApi(){
+        showDataFromApi(Statics.url)
+    }
+
+    private fun delUser(fromUrl: String, userId: Int){
+        val newUrl = "$fromUrl/$userId"
+        val req = StringRequest(
+            Request.Method.DELETE, newUrl, { showDataFromApi(fromUrl) }, { }
+        )
+        val queue = Volley.newRequestQueue(this)
+        queue.add(req)
+    }
+
+    fun delUser(userId: Int){
+        delUser(Statics.url, userId)
     }
 }

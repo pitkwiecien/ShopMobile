@@ -8,14 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Adapter(private val dataSet: ArrayList<ArrayList<String>>) :
+class Adapter(private val dataSet: ArrayList<ArrayList<String>>, private val usersActivity: UsersActivity) :
     RecyclerView.Adapter<Adapter.ViewHolder>() {
-
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View, usersActivity: UsersActivity) : RecyclerView.ViewHolder(view) {
         val idView: TextView
         val nameView: TextView
         val surnameView: TextView
@@ -36,7 +35,7 @@ class Adapter(private val dataSet: ArrayList<ArrayList<String>>) :
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.single_user, viewGroup, false)
 
-        return ViewHolder(view)
+        return ViewHolder(view, usersActivity)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -47,10 +46,13 @@ class Adapter(private val dataSet: ArrayList<ArrayList<String>>) :
         viewHolder.idView.text = dataSet[position][0]
         viewHolder.nameView.text = dataSet[position][1]
         viewHolder.surnameView.text = dataSet[position][2]
+        viewHolder.removeButton.setOnClickListener{
+            usersActivity.delUser(dataSet[position][0].toInt())
+            this.usersActivity.showDataFromApi()
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
 }
-
