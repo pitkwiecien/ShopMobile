@@ -1,3 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" tools:ignore="Typos">testApp1</string>
+    <string name="users_button">Users</string>
+    <string name="products_button">Products</string>
+    <string name="about_button">About</string>
 </resources>
