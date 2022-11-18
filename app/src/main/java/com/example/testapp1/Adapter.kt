@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class Adapter(private val dataSet: Array<Array<String>>) :
+class Adapter(private val dataSet: ArrayList<ArrayList<String>>) :
     RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     /**
