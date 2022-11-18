@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val url = "172.31.108.220/api/users/"
+        val url = "192.168.1.118:8080/api/users/"
         val queue = Volley.newRequestQueue(this)
 
         val req = StringRequest(
