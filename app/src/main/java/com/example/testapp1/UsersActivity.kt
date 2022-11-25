@@ -1,6 +1,9 @@
 package com.example.testapp1
 
+import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -32,13 +35,35 @@ class UsersActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        showDataFromApi()
+        showDataFromApi(URL)
+        Log.e("abc", "b")
+        val dbHelper = DBHelper(this)
+        val db: SQLiteDatabase = dbHelper.writableDatabase
+        Log.e("abc", "c")
+
+        val data = ContentValues()
+
+        data.put("id", 2)
+        data.put("name", "pawel")
+        data.put("surname", "kowalski")
+
+        db.insertOrThrow("user", null, data)
+
+        val cursor: Cursor = db.rawQuery("SELECT * FROM user", null)
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            do {
+                Log.e(
+                    "bazaUsers",
+                    "${cursor.getString(0)} ${cursor.getString(1)} ${cursor.getString(2)}")
+            } while(cursor.moveToNext())
+        }
     }
 
-    private fun showDataFromApi(fromUrl: String){
+    fun showDataFromApi(fromUrl: String){
         val req = StringRequest(
-            Request.Method.GET, fromUrl, {
-                    response -> Log.e("test1", response)
+            Request.Method.GET, "$fromUrl/", {
+                    response -> Log.d("test1", response)
                 val jsonArray = JSONArray(response.toString())
                 val resultList: ArrayList<ArrayList<String>> = ArrayList()
                 for (i in 0 until jsonArray.length()){
@@ -49,17 +74,15 @@ class UsersActivity : AppCompatActivity() {
                     resultList.add(tmpList)
                 }
                 binding.recycler.adapter = Adapter(resultList, this)
-            }, {  }
+            }, {
+                    response -> Log.e("test1", response.toString())
+            }
         )
         val queue = Volley.newRequestQueue(this)
         queue.add(req)
     }
 
-    fun showDataFromApi(){
-        showDataFromApi(Statics.url)
-    }
-
-    private fun delUser(fromUrl: String, userId: Int){
+    fun delUser(fromUrl: String, userId: Int){
         val newUrl = "$fromUrl/$userId"
         val req = StringRequest(
             Request.Method.DELETE, newUrl, { showDataFromApi(fromUrl) }, { }
@@ -68,7 +91,7 @@ class UsersActivity : AppCompatActivity() {
         queue.add(req)
     }
 
-    fun delUser(userId: Int){
-        delUser(Statics.url, userId)
+    companion object{
+        const val URL = Statics.USED_URL + "/users"
     }
 }

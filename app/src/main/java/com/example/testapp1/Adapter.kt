@@ -47,8 +47,8 @@ class Adapter(private val dataSet: ArrayList<ArrayList<String>>, private val use
         viewHolder.nameView.text = dataSet[position][1]
         viewHolder.surnameView.text = dataSet[position][2]
         viewHolder.removeButton.setOnClickListener{
-            usersActivity.delUser(dataSet[position][0].toInt())
-            this.usersActivity.showDataFromApi()
+            usersActivity.delUser(UsersActivity.URL, dataSet[position][0].toInt())
+            this.usersActivity.showDataFromApi(UsersActivity.URL)
         }
     }
 
