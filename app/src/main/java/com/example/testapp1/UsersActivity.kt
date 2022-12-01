@@ -1,17 +1,15 @@
 package com.example.testapp1
 
-import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.testapp1.databinding.ActivityMainBinding
 import org.json.JSONArray
+
 
 class UsersActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -36,28 +34,26 @@ class UsersActivity : AppCompatActivity() {
         }
 
         showDataFromApi(URL)
-        Log.e("abc", "b")
+
+        this.deleteDatabase("UserDB")
+
         val dbHelper = DBHelper(this)
-        val db: SQLiteDatabase = dbHelper.writableDatabase
-        Log.e("abc", "c")
+        dbHelper.insert("user", arrayListOf(
+            mapOf(
+                "id" to "_1",
+                "name" to "pablo",
+                "surname" to "kowalski"
+            ),
+            mapOf(
+                "id" to "_2",
+                "name" to "piotr",
+                "surname" to "kox"
+            )
+        ))
 
-        val data = ContentValues()
+        Log.e("dbUsers", dbHelper.getContent().toString())
 
-        data.put("id", 2)
-        data.put("name", "pawel")
-        data.put("surname", "kowalski")
-
-        db.insertOrThrow("user", null, data)
-
-        val cursor: Cursor = db.rawQuery("SELECT * FROM user", null)
-        if (cursor.count > 0) {
-            cursor.moveToFirst()
-            do {
-                Log.e(
-                    "bazaUsers",
-                    "${cursor.getString(0)} ${cursor.getString(1)} ${cursor.getString(2)}")
-            } while(cursor.moveToNext())
-        }
+        dbHelper.close()
     }
 
     fun showDataFromApi(fromUrl: String){

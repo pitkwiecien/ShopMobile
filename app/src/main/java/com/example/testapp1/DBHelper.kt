@@ -2,50 +2,58 @@ package com.example.testapp1
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
-class DBHelper(context: Context): SQLiteOpenHelper(context, "UserDB", null, 1) {
-    override fun onCreate(p0: SQLiteDatabase?) {
-        Log.e("abc", "a")
+class DBHelper(context: Context?): SQLiteOpenHelper(context, "UserDB", null, 1) {
+    override fun onCreate(db: SQLiteDatabase) {
         val query = "CREATE TABLE user (\n" +
                 "  `id` INT(11) PRIMARY KEY,\n" +
                 "  `name` VARCHAR(30),\n" +
                 "  `surname` VARCHAR(30)\n" +
-                ")";
-        p0?.execSQL(query)
-        Log.e("abc", "d")
-        Log.e("abc", p0.toString())
+                ");"
+        db.execSQL(query)
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
+    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
+        db.execSQL("DROP TABLE IF EXISTS user")
+        onCreate(db)
     }
 
-//    companion object{
-//        fun insert(context: Context, dbName: String, dataToInsertArg: Array<Map<String, String>>){
-//            val dbHelper = DBHelper(context)
-//            val db: SQLiteDatabase = dbHelper.writableDatabase
-//
-//            val data = ContentValues()
-//
-//            dataToInsertArg.forEach { elem ->
-//                elem.forEach { entry ->
-//                    when(entry.value[0]){
-//                        '_' -> {
-//                            val newVal: String = entry.value.subSequence(1, entry.value.length).toString()
-//                            Log.e("test1", "\"${entry.key}\" : \"${newVal.toInt()}\"")
-//                            data.put(entry.key, newVal.toInt())
-//                            Log.e("test1", "ok")
-//                        }
-//                        else -> data.put(entry.key, entry.value)
-//                    }
-//                }
-//                Log.e("test1", data.toString())
-//                db.insertOrThrow(dbName, null, data)
-//                Log.e("test1", "ok3")
-//            }
-//        }
-//    }
+    fun insert(tableName: String, dataToInsertArg: ArrayList<Map<String, String>>){
+        val db = this.writableDatabase
+
+        val data = ContentValues()
+
+        dataToInsertArg.forEach { elem ->
+            elem.forEach { entry ->
+                when(entry.value[0]){
+                    '_' -> {
+                        val newVal: String = entry.value.subSequence(1, entry.value.length).toString()
+                        data.put(entry.key, newVal.toInt())
+                    }
+                    else -> data.put(entry.key, entry.value)
+                }
+            }
+            db.insertOrThrow(tableName, null, data)
+        }
+        db.close()
+    }
+
+    fun getContent(where: String? = null): ArrayList<String> {
+        val db = this.writableDatabase
+
+        val cursor: Cursor = db.rawQuery("SELECT * FROM user WHERE ${where ?: "1"};", null)
+        val ret: ArrayList<String> = ArrayList()
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            do {
+                ret.add("${cursor.getString(0)} ${cursor.getString(1)} ${cursor.getString(2)}")
+            } while(cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return ret
+    }
 }
